@@ -2,9 +2,6 @@ Change everything that is inside <> to your configuration.
 
 TEMPLATE_DIRS = (
     '<YOUR-DJANGO-PROJECT>/django-fukinbook/templates',
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -28,4 +25,4 @@ INSTALLED_APPS = (
 
 FACEBOOK_APP_ID = '<YOUR-APP-ID>'
 FACEBOOK_API_SECRET = '<YOUR-APP-SECRET>'
-FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/canvas/'
+FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/'
