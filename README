@@ -1,4 +1,5 @@
-Change everything that is inside <> to your configuration.
+1) Create an app on facebook and activate sandbox mode
+2) Change everything on your settings.py that is inside <> to your configuration
 
 TEMPLATE_DIRS = (
     '<YOUR-DJANGO-PROJECT>/django-fukinbook/templates',
@@ -26,3 +27,9 @@ INSTALLED_APPS = (
 FACEBOOK_APP_ID = '<YOUR-APP-ID>'
 FACEBOOK_API_SECRET = '<YOUR-APP-SECRET>'
 FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/'
+
+3) Change your urls.py
+
+urlpatterns = patterns('',
+    url(r'^/login', 'django-fukinbook.views.login'),
+)
