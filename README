@@ -31,5 +31,5 @@ FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/'
 3) Change your urls.py
 
 urlpatterns = patterns('',
-    url(r'^/login', 'django-fukinbook.views.login'),
+    url(r'^login/', 'django-fukinbook.views.login'),
 )
