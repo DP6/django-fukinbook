@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import cgi
 import urllib
 
-import facebook_teste.settings as settings
+import settings
 import models
 
 def yay(request):
@@ -28,7 +28,7 @@ def login(request):
                 'client_secret': settings.FACEBOOK_API_SECRET,
                 'code': request.GET['code'],
             }
-            
+
             url = 'https://graph.facebook.com/oauth/access_token?' + \
                     urllib.urlencode(args)
             response = cgi.parse_qs(urllib.urlopen(url).read())
@@ -41,7 +41,7 @@ def login(request):
 
             facebook_session.expires = expires
             facebook_session.save()
-            
+
             user = auth.authenticate(token=access_token)
             if user:
                 if user.is_active:
