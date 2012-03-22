@@ -1,0 +1,28 @@
+Change everything that is inside <> to your configuration.
+
+TEMPLATE_DIRS = (
+    '<YOUR-DJANGO-PROJECT>/django-fukinbook/templates',
+)
+
+AUTHENTICATION_BACKENDS = (
+    '<YOUR-DJANGO-PROJECT>.django-fukinbook.backends.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django-fukinbook',
+    # Uncomment the next line to enable the admin:
+    #'django.contrib.admin',
+    # Uncomment the next line to enable admin documentation:
+    # 'django.contrib.admindocs',
+)
+
+FACEBOOK_APP_ID = '<YOUR-APP-ID>'
+FACEBOOK_API_SECRET = '<YOUR-APP-SECRET>'
+FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/'
