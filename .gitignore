@@ -1,6 +1,6 @@
 *.pyc
 *.db
-
+__init__.*
 fukingbook.sublime-workspace
 
 fukingbook.sublime-project
