@@ -37,3 +37,6 @@ urlpatterns = patterns('',
 
 4) python manage.py syncdb
 5) Go to browser and type http://127.0.0.1/login/
+
+Just got everything from http://djangosnippets.org/snippets/2065/
+Thanks to http://djangosnippets.org/users/barnardo/
