@@ -32,7 +32,7 @@ FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/' # NOTE IT IS NOT localhos
 
 urlpatterns = patterns('',
     url(r'^login/', 'django-fukinbook.views.login'),
-    url(r'^yay/', 'django-fukinbook.views.login'),
+    url(r'^yay/', 'django-fukinbook.views.yay'),
 )
 
 4) python manage.py syncdb
