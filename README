@@ -18,10 +18,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django-fukinbook',
-    # Uncomment the next line to enable the admin:
-    #'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admin',
 )
 
 FACEBOOK_APP_ID = '<YOUR-APP-ID>'
@@ -30,9 +27,14 @@ FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/' # NOTE IT IS NOT localhos
 
 3) Change your urls.py
 
+from django.conf.urls.defaults import patterns, include, url
+from django.contrib import admin
+admin.autodiscover()
+
 urlpatterns = patterns('',
-    url(r'^login/', 'django-fukinbook.views.login'),
-    url(r'^yay/', 'django-fukinbook.views.yay'),
+    url(r'^login/', 'fukinbook_app.views.login'),
+    url(r'^yay/', 'fukinbook_app.views.yay'),
+    url(r'^admin/', include(admin.site.urls)),
 )
 
 4) python manage.py syncdb

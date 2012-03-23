@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import urlparse
 import urllib
+import simplejson
 
 import settings
 import models
@@ -13,9 +14,26 @@ import models
 def yay(request):
     return HttpResponse('yay!')
 
-class FacebookResponse():
-    URL = 'https://graph.facebook.com/oauth/access_token?'
-    args = {
+
+class FacebookSessionError(Exception):   
+    def __init__(self, error_type, message):
+        self.message = message
+        self.type = error_type
+        
+    def get_message(self): 
+        return self.message
+    
+    def get_type(self):
+        return self.type
+    
+    def __unicode__(self):
+        return u'%s: "%s"' % (self.type, self.message)
+
+
+class FacebookSession:
+    API_URL = 'https://graph.facebook.com/'
+    TOKEN_URL = '%s%s' % (API_URL, 'oauth/access_token?')
+    ARGS = {
         'client_id': settings.FACEBOOK_APP_ID,
         'client_secret': settings.FACEBOOK_APP_SECRET,
         'redirect_uri': settings.FACEBOOK_REDIRECT_URI,
@@ -28,14 +46,30 @@ class FacebookResponse():
         self._get_response()        
         
     def _encode_url(self):
-        self.args['code'] = self.code
-        return '%s%s' % (self.URL, urllib.urlencode(self.args))
+        self.ARGS['code'] = self.code
+        return '%s%s' % (self.TOKEN_URL, urllib.urlencode(self.ARGS))
     
     def _get_response(self):
         url = self._encode_url()
         response = urlparse.parse_qs(urllib.urlopen(url).read())
         self.access_token = response['access_token'][0]
         self.expires = response['expires'][0]
+        
+    def get_user_profile(self, object_id='me', connection_type=None, metadata=False):
+        url = '%s%s' % (self.API_URL, object_id)
+        if connection_type:
+            url += '/%s' % (connection_type)
+        
+        params = {'access_token': self.access_token}
+        if metadata:
+            params['metadata'] = 1
+         
+        url += '?%s' % urllib.urlencode(params)
+        response = simplejson.load(urllib.urlopen(url))
+        if 'error' in response:
+            error = response['error']
+            raise FacebookSessionError(error['type'], error['message'])
+        return response
     
 @csrf_exempt
 def login(request):
@@ -46,17 +80,9 @@ def login(request):
 
     if request.GET:
         if 'code' in request.GET:
-            response = FacebookResponse(request.GET['code'])
-            access_token = response.access_token
-            expires = response.expires
+            session = FacebookSession(request.GET['code'])
 
-            facebook_session = models.FacebookSession.objects.get_or_create(
-                access_token=access_token,
-            )[0]
-            facebook_session.expires = expires
-            facebook_session.save()
-
-            user = auth.authenticate(token=access_token)
+            user = auth.authenticate(session=session)
             if user:
                 if user.is_active:
                     auth.login(request, user)

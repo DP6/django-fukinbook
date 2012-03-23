@@ -1,4 +1,4 @@
-from models import FacebookSession
+from models import Token
 from django.contrib import admin
 
-admin.site.register(FacebookSession)
+admin.site.register(Token)
