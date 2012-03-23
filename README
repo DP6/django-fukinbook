@@ -26,7 +26,7 @@ INSTALLED_APPS = (
 
 FACEBOOK_APP_ID = '<YOUR-APP-ID>'
 FACEBOOK_APP_SECRET = '<YOUR-APP-SECRET>'
-FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/' # NOT IT IS NOT localhost:8000 - It's because I put 127.0.0.1:8000 on my facebook application URL
+FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/' # NOTE IT IS NOT localhost:8000 - It's because I put 127.0.0.1:8000 on my facebook application URL
 
 3) Change your urls.py
 
