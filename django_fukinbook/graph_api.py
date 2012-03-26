@@ -46,9 +46,7 @@ class GraphAPI:
         return None
     
     def get_upcoming_birthdates(self):
-        #fql = 'select name, uid, birthday_date from user where uid in (select uid2 from friend where uid1=me()) and strlen(birthday_date) != 0 and ((substr(birthday_date, 0, 2) = 03 and substr(birthday_date, 3, 5) > 26) or (substr(birthday_date, 0, 2) = 05 and substr(birthday_date, 3, 5) < 26)) order by birthday_date'
-        #fql = 'select name, uid, birthday_date from user where uid in (select uid2 from friend where uid1=me())'
-        fql = '''select name, uid, birthday_date from user where uid in (select uid2 from friend where uid1=me()) and strlen(birthday_date) != 0 and ((substr(birthday_date, 0, 2) = '03' and substr(birthday_date, 3, 5) > '26') or (substr(birthday_date, 0, 2) = '05' and substr(birthday_date, 3, 5) < '26')) order by birthday_date limit 5'''
+        fql = '''select name, uid, birthday_date from user where uid in (select uid2 from friend where uid1=me()) and strlen(birthday_date) != 0 and ((substr(birthday_date, 0, 2) = 03 and substr(birthday_date, 3, 5) > 26) or (substr(birthday_date, 0, 2) = 05 and substr(birthday_date, 3, 5) < 26)) order by birthday_date limit 5'''
         response = self.get(path='fql', fql=fql)
         return response
         
