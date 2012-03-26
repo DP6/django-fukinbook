@@ -8,8 +8,8 @@ import settings
 import models
 from session import FacebookSession
 
-def yay(request):
-    return HttpResponse('yay!')
+def test(request):
+    return HttpResponse('Authenticated!!')
 
 @csrf_exempt
 def login(request):
@@ -26,7 +26,7 @@ def login(request):
             if user:
                 if user.is_active:
                     auth.login(request, user)
-                    return HttpResponseRedirect('/yay/')
+                    return HttpResponseRedirect('/test/')
                 else:
                     error = 'AUTH_DISABLED'
             else:
