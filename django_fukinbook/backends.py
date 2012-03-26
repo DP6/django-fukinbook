@@ -18,7 +18,6 @@ class FacebookBackend:
         user.last_name = profile['last_name']
         user.save()
 
-        import pdb; pdb.set_trace()
         try:
             token = Token.objects.get(uid=profile['id'], user=user)
         except Exception:
