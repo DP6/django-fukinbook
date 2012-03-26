@@ -6,11 +6,11 @@
 2) Change everything on your settings.py that is inside <> to your configuration
 
 TEMPLATE_DIRS = (
-    '<YOUR-DJANGO-PROJECT>/django-fukinbook/templates',
+    '<YOUR-DJANGO-PROJECT>/django_fukinbook/templates',
 )
 
 AUTHENTICATION_BACKENDS = (
-    '<YOUR-DJANGO-PROJECT>.django-fukinbook.backends.FacebookBackend',
+    '<YOUR-DJANGO-PROJECT>.django_fukinbook.backends.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
