@@ -1,17 +1,12 @@
 from django.contrib.auth import models as auth_models
-
-import models
+from views import FacebookSession
+from models import Token
 
 class FacebookBackend:
-    supports_object_permissions=True 
+    supports_object_permissions=True
     supports_anonymous_user=False
-    def authenticate(self, token=None):
-        facebook_session = models.FacebookSession.objects.get(
-            access_token=token,
-        )
-
-        profile = facebook_session.query('me')
-        
+    def authenticate(self, session):
+        profile = session.get_user_profile()
         try:
             user = auth_models.User.objects.get(username=profile['id'])
         except auth_models.User.DoesNotExist:
@@ -23,14 +18,16 @@ class FacebookBackend:
         user.last_name = profile['last_name']
         user.save()
 
+        #import pdb; pdb.set_trace()
         try:
-            models.FacebookSession.objects.get(uid=profile['id']).delete()
-        except models.FacebookSession.DoesNotExist:
-            pass
-
-        facebook_session.uid = profile['id']
-        facebook_session.user = user
-        facebook_session.save()
+            token = Token.objects.get(
+                access_token=session.access_token)
+        except Exception:
+            token = Token(access_token=session.access_token)
+        token.expires = session.expires
+        token.uid = profile['id']
+        token.user = user
+        token.save()
    
         return user
    
