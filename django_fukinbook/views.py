@@ -5,28 +5,31 @@ from django.template import Context
 from django.views.decorators.csrf import csrf_exempt
 
 import settings
-import models
+from models import Token
 from session import FacebookSession
 
-def test(request):
-    return HttpResponse('Authenticated!!')
+def canvas(request):
+    try:
+        token = Token.objects.get(user=request.user)
+    except:
+        HttpResponseRedirect('/404/')
+    return HttpResponse(token)
 
 @csrf_exempt
 def login(request):
     error = None
 
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/yay/')
+        return HttpResponseRedirect('/canvas/')
 
     if request.GET:
         if 'code' in request.GET:
             session = FacebookSession(request.GET['code'])
-
             user = auth.authenticate(session=session)
             if user:
                 if user.is_active:
                     auth.login(request, user)
-                    return HttpResponseRedirect('/test/')
+                    return HttpResponseRedirect('/canvas/')
                 else:
                     error = 'AUTH_DISABLED'
             else:

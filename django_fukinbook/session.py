@@ -50,23 +50,23 @@ class FacebookSession:
         self.access_token = response['access_token'][0]
         self.expires = response['expires'][0]
 
-    def get_user_profile(self, object_id='me', connection_type=None,
-                         metadata=False):
-        url = '%s%s' % (self.API_URL, object_id)
-        if connection_type:
-            url += '/%s' % (connection_type)
-
-        params = {'access_token': self.access_token}
-        if metadata:
-            params['metadata'] = 1
-
-        url += '?%s' % urllib.urlencode(params)
-        try:
-            response = simplejson.load(urllib.urlopen(url))
-        except Exception, e:
-            # TODO: Need to know what to do with exception
-            HttpResponseRedirect('/404/')
-        if 'error' in response:
-            error = response['error']
-            raise FacebookSessionError(error['type'], error['message'])
-        return response
+#    def get_user_profile(self, object_id='me', connection_type=None,
+#                         metadata=False):
+#        url = '%s%s' % (self.API_URL, object_id)
+#        if connection_type:
+#            url += '/%s' % (connection_type)
+#
+#        params = {'access_token': self.access_token}
+#        if metadata:
+#            params['metadata'] = 1
+#
+#        url += '?%s' % urllib.urlencode(params)
+#        try:
+#            response = simplejson.load(urllib.urlopen(url))
+#        except Exception, e:
+#            # TODO: Need to know what to do with exception
+#            HttpResponseRedirect('/404/')
+#        if 'error' in response:
+#            error = response['error']
+#            raise FacebookSessionError(error['type'], error['message'])
+#        return response

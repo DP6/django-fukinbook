@@ -1,12 +1,13 @@
 from django.contrib.auth import models as auth_models
-from views import FacebookSession
 from models import Token
+from graph_api import GraphAPI
 
 class FacebookBackend:
     supports_object_permissions = True
     supports_anonymous_user = False
     def authenticate(self, session):
-        profile = session.get_user_profile()
+        api = GraphAPI(session.access_token)
+        profile = api.get()
         try:
             user = auth_models.User.objects.get(username=profile['id'])
         except auth_models.User.DoesNotExist:
