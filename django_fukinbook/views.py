@@ -11,8 +11,8 @@ import simplejson
 import teste.settings as settings
 import models
 
-def yay(request):
-    return HttpResponse('yay!')
+def test(request):
+    return HttpResponse('Authenticated!!')
 
 
 class FacebookSessionError(Exception):   
@@ -86,7 +86,7 @@ def login(request):
             if user:
                 if user.is_active:
                     auth.login(request, user)
-                    return HttpResponseRedirect('/yay/')
+                    return HttpResponseRedirect('/test/')
                 else:
                     error = 'AUTH_DISABLED'
             else:
