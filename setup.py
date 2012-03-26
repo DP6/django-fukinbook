@@ -8,7 +8,7 @@ setup(
     author_email = 'binarios.inglorios@digitalcube.com.br',
     url = '',
     license = 'GPL',
-    packages = ['django-fukinbook'],
+    packages = ['django_fukinbook'],
     zip_safe=False,
     install_requires=[
         'simplejson',

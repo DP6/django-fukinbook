@@ -8,7 +8,7 @@ import urlparse
 import urllib
 import simplejson
 
-import settings
+import teste.settings as settings
 import models
 
 def yay(request):
