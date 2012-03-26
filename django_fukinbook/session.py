@@ -1,3 +1,5 @@
+from django.http import HttpResponseRedirect
+
 import urlparse
 import urllib
 import simplejson
@@ -40,7 +42,11 @@ class FacebookSession:
 
     def _get_response(self):
         url = self._encode_url()
-        response = urlparse.parse_qs(urllib.urlopen(url).read())
+        try:
+            response = urlparse.parse_qs(urllib.urlopen(url).read())
+        except Exception, e:
+            # TODO: Need to know what to do with exception
+            HttpResponseRedirect('/404/')
         self.access_token = response['access_token'][0]
         self.expires = response['expires'][0]
 
@@ -55,7 +61,11 @@ class FacebookSession:
             params['metadata'] = 1
 
         url += '?%s' % urllib.urlencode(params)
-        response = simplejson.load(urllib.urlopen(url))
+        try:
+            response = simplejson.load(urllib.urlopen(url))
+        except Exception, e:
+            # TODO: Need to know what to do with exception
+            HttpResponseRedirect('/404/')
         if 'error' in response:
             error = response['error']
             raise FacebookSessionError(error['type'], error['message'])
