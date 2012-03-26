@@ -1,6 +1,7 @@
 == Django backend for easy authentication with Facebook == 
 
 
+
 1) Create an app on facebook and activate sandbox mode
 2) Change everything on your settings.py that is inside <> to your configuration
 
