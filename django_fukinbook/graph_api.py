@@ -63,5 +63,10 @@ class GraphAPI:
         order by birthday_date limit 5'''
         response = self.get(path='fql', fql=fql)
         return response
+
+    def get_family_birthdates(self):
+        fql = 'select name, birthday_date, relationship_status, significant_other_id, family from user where uid = me()'
+        response = self.get(path='fql', fql=fql)
+        return response
         
         
