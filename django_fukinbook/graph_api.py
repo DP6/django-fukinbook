@@ -1,22 +1,20 @@
 from session import FacebookSessionError
-
-import urlparse
-import urllib
+from django.http import HttpResponseRedirect
 import simplejson
-import pprint
+import urllib
+import urlparse
+import settings
 
-# TODO: API_URL is duplicated with session module. Fix it.
 class GraphAPI:
     ''' We are supposing that every request will have a session '''
     # TODO: Implement anon requests
-    API_URL = 'https://graph.facebook.com/'
     def __init__(self, access_token=None):
         self.access_token = access_token
-        
-    def get(self, path='me', fql=None, connection_type=None, metadata=False, format='json'):
-        url = '%s%s' % (self.API_URL, path)
+    
+    def _create_token_url(self, path, fql, connection_type, metadata, format):
+        token_url = '%s%s' % (settings.GRAPH_API_URL, path)
         if connection_type:
-            url += '/%s' % (connection_type)
+            token_url = '%s/%s' % (token_url, connection_type)
 
         params = {'access_token': self.access_token,
                   'format': format}
@@ -25,16 +23,25 @@ class GraphAPI:
         if fql:
             params['q'] = fql
 
-        url += '?%s' % urllib.urlencode(params)
-        pp = pprint.PrettyPrinter()
-        pp.pprint(url)
+        token_url = '%s?%s' % (token_url, urllib.urlencode(params))
+        return token_url
+        
+    def get(self, path='me', fql=None, connection_type=None, metadata=False, 
+            format='json'):
+        token_url = self._create_token_url(path, fql, connection_type, metadata, 
+                                           format)
         try:
-            response = simplejson.load(urllib.urlopen(url))
+            response = simplejson.load(urllib.urlopen(token_url))
         except Exception, e:
             # TODO: Need to know what to do with exception
             HttpResponseRedirect('/404/')
         if 'error' in response:
             error = response['error']
+            # TODO: This if above need ALOT more tests
+            # I can't predict OAuthException can be fixed just only refreshing
+            # the access token
+            if error['type'] == 'OAuthException':
+                HttpResponseRedirect('/login?refresh_token=true')
             raise FacebookSessionError(error['type'], error['message'])
         return response
 
@@ -46,7 +53,14 @@ class GraphAPI:
         return None
     
     def get_upcoming_birthdates(self):
-        fql = '''select name, uid, birthday_date from user where uid in (select uid2 from friend where uid1=me()) and strlen(birthday_date) != 0 and ((substr(birthday_date, 0, 2) = 03 and substr(birthday_date, 3, 5) > 26) or (substr(birthday_date, 0, 2) = 05 and substr(birthday_date, 3, 5) < 26)) order by birthday_date limit 5'''
+        fql = '''select name, uid, birthday_date from user where uid in 
+        (select uid2 from friend where uid1=me()) 
+        and strlen(birthday_date) != 0 
+        and ((substr(birthday_date, 0, 2) = 03 
+        and substr(birthday_date, 3, 5) > 26) 
+        or (substr(birthday_date, 0, 2) = 05 
+        and substr(birthday_date, 3, 5) < 26)) 
+        order by birthday_date limit 5'''
         response = self.get(path='fql', fql=fql)
         return response
         

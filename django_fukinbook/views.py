@@ -1,15 +1,14 @@
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, HttpResponse
+from django.shortcuts import render_to_response, HttpResponse, redirect
 from django.template import Context
 from django.views.decorators.csrf import csrf_exempt
-
-import pprint
-
-import settings
+from graph_api import GraphAPI
 from models import Token
 from session import FacebookSession
-from graph_api import GraphAPI
+import logging
+import settings
+import urllib
 
 def canvas(request):
     try:
@@ -17,15 +16,28 @@ def canvas(request):
     except:
         HttpResponseRedirect('/404/')
     api = GraphAPI(token.access_token)
-    a = api.get_upcoming_birthdates()
-    pp = pprint.PrettyPrinter()
-    pp.pprint(a)
-    return HttpResponse(a['data'])
+    a = api.get_significant_other()
+
+    return HttpResponse(a)
+
+def create_authorize_url():
+    AUTH_URI = 'oauth/authorize'
+    
+    params = {
+      'client_id': settings.FACEBOOK_APP_ID,
+      'redirect_uri': settings.FACEBOOK_REDIRECT_URI,
+      'scope': settings.FACEBOOK_APP_SCOPE}
+    authorize_url = '%s%s?%s' % (settings.GRAPH_API_URL, AUTH_URI, 
+                                 urllib.urlencode(params))
+    return authorize_url
 
 @csrf_exempt
 def login(request):
     error = None
-
+    
+    if 'refresh_token' in request.GET:
+        redirect(create_authorize_url())
+    
     if request.user.is_authenticated():
         return HttpResponseRedirect('/canvas/')
 
@@ -44,7 +56,7 @@ def login(request):
         elif 'error_reason' in request.GET:
             error = 'AUTH_DENIED'
 
-    template_context = {'settings': settings, 'error': error}
+    template_context = {'error': error, 'auth_url': create_authorize_url()}
     return render_to_response('login.html', template_context,
                               context_instance=Context(request))
 
