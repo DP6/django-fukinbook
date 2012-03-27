@@ -14,7 +14,9 @@ class FacebookBackend:
             user = auth_models.User(username=profile['id'])
 
         user.set_unusable_password()
-        user.email = profile['email']
+        # TODO: Must correct this workaround
+        if 'email' in profile:
+            user.email = profile['email']
         user.first_name = profile['first_name']
         user.last_name = profile['last_name']
         user.save()

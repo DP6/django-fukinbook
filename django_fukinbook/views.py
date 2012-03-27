@@ -10,15 +10,19 @@ import logging
 import settings
 import urllib
 
+logger = logging.getLogger('fukinbook.custom')
+
 def canvas(request):
     try:
         token = Token.objects.get(user=request.user)
     except:
-        HttpResponseRedirect('/404/')
+        return HttpResponseRedirect('/404/')
     api = GraphAPI(token.access_token)
     a = api.get_significant_other()
+    if isinstance(a, HttpResponseRedirect):
+        return a
 
-    return HttpResponse(a)
+    return HttpResponse('aff: ' + str(a))
 
 def create_authorize_url():
     AUTH_URI = 'oauth/authorize'
@@ -33,28 +37,27 @@ def create_authorize_url():
 
 @csrf_exempt
 def login(request):
+    next_url = '/canvas/'
     error = None
     
-    if 'refresh_token' in request.GET:
-        redirect(create_authorize_url())
-    
-    if request.user.is_authenticated():
-        return HttpResponseRedirect('/canvas/')
-
     if request.GET:
+        if 'refresh_token' in request.GET:
+            return redirect(create_authorize_url())
         if 'code' in request.GET:
             session = FacebookSession(request.GET['code'])
             user = auth.authenticate(session=session)
             if user:
                 if user.is_active:
                     auth.login(request, user)
-                    return HttpResponseRedirect('/canvas/')
+                    return redirect(next_url)
                 else:
                     error = 'AUTH_DISABLED'
             else:
                 error = 'AUTH_FAILED'
         elif 'error_reason' in request.GET:
             error = 'AUTH_DENIED'
+        elif request.user.is_authenticated():
+                return redirect(next_url)
 
     template_context = {'error': error, 'auth_url': create_authorize_url()}
     return render_to_response('login.html', template_context,

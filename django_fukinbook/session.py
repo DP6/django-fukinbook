@@ -1,4 +1,5 @@
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 import settings
 import simplejson
 import urllib
@@ -8,12 +9,6 @@ class FacebookSessionError(Exception):
     def __init__(self, error_type, message):
         self.message = message
         self.type = error_type
-
-    def get_message(self):
-        return self.message
-
-    def get_type(self):
-        return self.type
 
     def __unicode__(self):
         return u'%s: "%s"' % (self.type, self.message)
@@ -43,7 +38,7 @@ class FacebookSession:
             response = urlparse.parse_qs(urllib.urlopen(url).read())
         except Exception, e:
             # TODO: Need to know what to do with exception
-            HttpResponseRedirect('/404/')
+            return redirect('/404/')
         self.access_token = response['access_token'][0]
         self.expires = response['expires'][0]
         
