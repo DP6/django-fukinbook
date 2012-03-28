@@ -79,6 +79,10 @@ LOGGING = {
     }
 }
 
+import logging
+LOGGER = logging.getLogger('fukinbook.custom')
+
+
 5) python manage.py syncdb
 6) Go to browser and type http://127.0.0.1/login/
 
