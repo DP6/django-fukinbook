@@ -1,5 +1,6 @@
-from django.http import HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import redirect
+from settings import LOGGER as logger
 import settings
 import simplejson
 import urllib
@@ -38,7 +39,8 @@ class FacebookSession:
             response = urlparse.parse_qs(urllib.urlopen(url).read())
         except Exception, e:
             # TODO: Need to know what to do with exception
-            return redirect('/404/')
+            logger.error(e)
+            raise Http404
         self.access_token = response['access_token'][0]
         self.expires = response['expires'][0]
         
