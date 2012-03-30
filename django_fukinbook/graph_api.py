@@ -25,26 +25,12 @@ class GraphAPI:
             logger.error(e)
             raise Http404
         if 'error' in response:
-            response = self._error_handler(response)
+            return self._error_handler(response)
         return response
     
     def _error_handler(self, response):
-        refresh_token_uri = '/login/?refresh_token=true'
         error = response['error']
-        logger.error(response['error'])
-        # TODO: This if above need ALOT more tests
-        # I can't predict OAuthException can be fixed just only refreshing
-        # the access token
-        
-        if error['type'] == 'OAuthException':
-            if 'code' in error:
-                code = error['code']
-                if code == 601:
-                    raise Http404
-                elif code == 190:
-                    logger.debug('ENTREI AQUI')
-                    pass
-            return redirect(refresh_token_uri)
+        logger.error(error)
         
         raise FacebookSessionError(error['type'], error['message'])
     

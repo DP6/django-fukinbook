@@ -19,9 +19,6 @@ class Token(models.Model):
         self._expires = (timestamp_now + int(value))
 
     def get_expires(self):
-        timestamp_now = time.mktime(datetime.datetime.utcnow().timetuple())
-        if self._expires < timestamp_now:
-            session = FacebookSession(request.GET['code'])
         return self._expires
     
     expires = property(get_expires, set_expires)

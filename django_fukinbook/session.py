@@ -14,7 +14,7 @@ class FacebookSessionError(Exception):
     def __unicode__(self):
         return u'%s: "%s"' % (self.type, self.message)
 
-# TODO: API_URL is duplicated with graph_api module. Fix it.
+
 class FacebookSession:
     TOKEN_URI = 'oauth/access_token'
     ARGS = {
@@ -44,4 +44,3 @@ class FacebookSession:
         self.access_token = response['access_token'][0]
         self.expires = response['expires'][0]
         
-

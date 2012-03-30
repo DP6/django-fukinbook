@@ -9,42 +9,27 @@ from session import FacebookSession
 from settings import LOGGER as logger
 import settings
 import urllib
+from decorators import facebook_auth_required
+from utils import create_authorize_url
 
-def canvas(request):
-    try:
-        token = Token.objects.get(user=request.user)
-    except Exception, e:
-        logger.error(e)
-        raise Http404
-    api = ExampleAPI(token.access_token)
+@facebook_auth_required
+def canvas(request, api):
     a = api.get()
-    #logger.debug(type(a))
-    if isinstance(a, HttpResponseRedirect):
-        return a
+#    if isinstance(a, HttpResponseRedirect):
+#        return a
 
     return HttpResponse('JSON: ' + str(a))
-
-def create_authorize_url():
-    AUTH_URI = 'oauth/authorize'
-    
-    params = {
-      'client_id': settings.FACEBOOK_APP_ID,
-      'redirect_uri': settings.FACEBOOK_REDIRECT_URI,
-      'scope': settings.FACEBOOK_APP_SCOPE,
-      'popup': 'false'}
-    authorize_url = '%s%s?%s' % (settings.GRAPH_API_URL, AUTH_URI, 
-                                 urllib.urlencode(params))
-    return authorize_url
 
 @csrf_exempt
 def login(request):
     next_url = '/canvas/'
+    auth_url = create_authorize_url()
     error = None
     
     if request.GET:
-        if 'refresh_token' in request.GET:
-            logger.debug('MUST REFRESH TOKEN')
-            return redirect(create_authorize_url())
+#        if 'refresh_token' in request.GET:
+#            logger.debug('MUST REFRESH TOKEN')
+#            return redirect(auth_url)
         if 'code' in request.GET:
             logger.debug('CODE FOUND')
             session = FacebookSession(request.GET['code'])
@@ -64,7 +49,7 @@ def login(request):
         logger.debug('AUTHORIZED USER')
         return redirect(next_url)
 
-    template_context = {'error': error, 'auth_url': create_authorize_url()}
+    template_context = {'error': error, 'auth_url': auth_url}
     return render_to_response('login.html', template_context,
                               context_instance=Context(request))
 
