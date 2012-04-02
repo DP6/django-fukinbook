@@ -32,6 +32,7 @@ FACEBOOK_APP_SCOPE = ','.join(['user_relationships',
                                'friends_birthday']) # You can change to facebook scopes you want to use
 
 GRAPH_API_URL = 'https://graph.facebook.com/'
+MAIN_URL = '/canvas/' # This is the index of your facebook app
 
 3) Change your urls.py
 

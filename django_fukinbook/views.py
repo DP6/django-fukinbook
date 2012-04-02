@@ -22,7 +22,6 @@ def canvas(request, api):
 
 @csrf_exempt
 def login(request):
-    next_url = '/canvas/'
     auth_url = create_authorize_url()
     error = None
     
@@ -38,7 +37,7 @@ def login(request):
                 if user.is_active:
                     logger.debug('ACTIVE USER')
                     auth.login(request, user)
-                    return redirect(next_url)
+                    return redirect(settings.MAIN_URL)
                 else:
                     error = 'AUTH_DISABLED'
             else:
@@ -47,7 +46,7 @@ def login(request):
             error = 'AUTH_DENIED'
     elif request.user.is_authenticated():
         logger.debug('AUTHORIZED USER')
-        return redirect(next_url)
+        return redirect(settings.MAIN_URL)
 
     template_context = {'error': error, 'auth_url': auth_url}
     return render_to_response('login.html', template_context,
