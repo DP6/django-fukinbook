@@ -59,7 +59,8 @@ class ExampleAPI(GraphAPI):
     def get_upcoming_birthdates(self):
         today = dict(day=datetime.datetime.now().strftime('%2d'),
                      month=datetime.datetime.now().strftime('%2m'))
-        fql = '''select name, uid, birthday_date from user where uid in 
+        fql = '''select name, uid, birthday_date, pic_small, pic, pic_big 
+        from user where uid in 
         (select uid2 from friend where uid1=me()) 
         and strlen(birthday_date) != 0 
         and ((substr(birthday_date, 0, 2) = {month}

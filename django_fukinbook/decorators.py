@@ -36,7 +36,7 @@ def facebook_auth_required(f):
                         pass
             return redirect(authorize_url)
         
-        return f(request, api, me, *args, **kwargs)
+        return f(request, token.access_token, me, *args, **kwargs)
     wrap.__doc__ = f.__doc__
     wrap.__name__ = f.__name__ 
     return wrap

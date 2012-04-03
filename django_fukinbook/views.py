@@ -13,7 +13,8 @@ from decorators import facebook_auth_required
 from utils import create_authorize_url
 
 @facebook_auth_required
-def canvas(request, api, me):
+def canvas(request, access_token, me):
+    api = GraphAPI(access_token)
     a = api.get()
 #    if isinstance(a, HttpResponseRedirect):
 #        return a
