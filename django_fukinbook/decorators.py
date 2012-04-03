@@ -8,18 +8,6 @@ import time
 from utils import create_authorize_url
 from graph_api import GraphAPI
 
-#def create_authorize_url():
-#    AUTH_URI = 'oauth/authorize'
-#    
-#    params = {
-#      'client_id': settings.FACEBOOK_APP_ID,
-#      'redirect_uri': settings.FACEBOOK_REDIRECT_URI,
-#      'scope': settings.FACEBOOK_APP_SCOPE,
-#      'popup': 'false'}
-#    authorize_url = '%s%s?%s' % (settings.GRAPH_API_URL, AUTH_URI, 
-#                                 urllib.urlencode(params))
-#    return authorize_url
-
 def facebook_auth_required(f):
     def wrap(request, *args, **kwargs):
         login_url = '/login/'     
@@ -36,9 +24,9 @@ def facebook_auth_required(f):
             return redirect(authorize_url)
         
         api = GraphAPI(token.access_token)
-        response = api.get()
-        if 'error' in response:
-            error = response['error']
+        me = api.get()
+        if 'error' in me:
+            error = me['error']
             if error['type'] == 'OAuthException':
                 if 'code' in error:
                     code = error['code']
@@ -48,7 +36,7 @@ def facebook_auth_required(f):
                         pass
             return redirect(authorize_url)
         
-        return f(request, api, *args, **kwargs)
+        return f(request, api, me, *args, **kwargs)
     wrap.__doc__ = f.__doc__
     wrap.__name__ = f.__name__ 
     return wrap
