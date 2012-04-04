@@ -5,7 +5,7 @@ import settings
 import simplejson
 import urllib
 import urlparse
-
+    
 class FacebookSessionError(Exception):
     def __init__(self, error_type, message):
         self.message = message

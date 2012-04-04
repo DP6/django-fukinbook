@@ -13,10 +13,9 @@ from decorators import facebook_auth_required
 from utils import create_authorize_url
 
 @facebook_auth_required
-def canvas(request, api, me):
+def canvas(request):
+    api = GraphAPI(request.access_token)
     a = api.get()
-#    if isinstance(a, HttpResponseRedirect):
-#        return a
 
     return HttpResponse('JSON: ' + str(a))
 
@@ -26,9 +25,6 @@ def login(request):
     error = None
     
     if request.GET:
-#        if 'refresh_token' in request.GET:
-#            logger.debug('MUST REFRESH TOKEN')
-#            return redirect(auth_url)
         if 'code' in request.GET:
             logger.debug('CODE FOUND')
             session = FacebookSession(request.GET['code'])

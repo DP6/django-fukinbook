@@ -27,7 +27,9 @@ INSTALLED_APPS = (
 
 FACEBOOK_APP_ID = '<YOUR-APP-ID>'
 FACEBOOK_APP_SECRET = '<YOUR-APP-SECRET>'
-FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/' # NOTE IT IS NOT localhost:8000 - It's because I put 127.0.0.1:8000 on my facebook application URL
+FACEBOOK_LOGIN_URI = '/login/'
+FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/{login}'.format(
+                        login=FACEBOOK_LOGIN_URI)# NOTE IT IS NOT localhost:8000 - It's because I put 127.0.0.1:8000 on my facebook application URL
 FACEBOOK_APP_SCOPE = ','.join(['user_relationships', 
                                'friends_birthday']) # You can change to facebook scopes you want to use
 
