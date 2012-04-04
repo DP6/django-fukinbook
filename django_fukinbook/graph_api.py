@@ -7,6 +7,7 @@ import settings
 import simplejson
 import urllib
 import urlparse
+import datetime
 
 class GraphAPI:
     ''' We are supposing that every request will have a session '''
@@ -56,14 +57,15 @@ class ExampleAPI(GraphAPI):
         return query
     
     def get_upcoming_birthdates(self):
-        fql = '''select name, uid, birthday_date from user where uid in 
+        today = dict(day=datetime.datetime.now().strftime('%2d'),
+                     month=datetime.datetime.now().strftime('%2m'))
+        fql = '''select name, uid, birthday_date, pic_small, pic, pic_big 
+        from user where uid in 
         (select uid2 from friend where uid1=me()) 
         and strlen(birthday_date) != 0 
-        and ((substr(birthday_date, 0, 2) = 03 
-        and substr(birthday_date, 3, 5) > 26) 
-        or (substr(birthday_date, 0, 2) = 05 
-        and substr(birthday_date, 3, 5) < 26)) 
-        order by birthday_date limit 5'''
+        and ((substr(birthday_date, 0, 2) = {month}
+        and substr(birthday_date, 3, 5) > {day})) 
+        order by birthday_date limit 7'''.format(**today)
         query = self.get(path='fql', fql=fql)
         return query
 
