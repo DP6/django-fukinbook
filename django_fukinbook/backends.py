@@ -5,6 +5,7 @@ from graph_api import GraphAPI
 class FacebookBackend:
     supports_object_permissions = True
     supports_anonymous_user = False
+    supports_inactive_user = False
     def authenticate(self, session):
         api = GraphAPI(session.access_token)
         profile = api.get()
