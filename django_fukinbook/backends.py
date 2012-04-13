@@ -9,13 +9,13 @@ class FacebookBackend:
     def authenticate(self, session):
         api = GraphAPI(session.access_token)
         profile = api.get()
+        id = profile['id']
         try:
-            user = auth_models.User.objects.get(username=profile['id'])
+            user = auth_models.User.objects.get(username=id)
         except auth_models.User.DoesNotExist:
-            user = auth_models.User(username=profile['id'])
+            user = auth_models.User(username=id)
 
         user.set_unusable_password()
-        # TODO: Must correct this workaround
         if 'email' in profile:
             user.email = profile['email']
         user.first_name = profile['first_name']
@@ -23,9 +23,9 @@ class FacebookBackend:
         user.save()
 
         try:
-            token = Token.objects.get(uid=profile['id'], user=user)
+            token = Token.objects.get(uid=id, user=user)
         except Exception:
-            token = Token(uid=profile['id'], user=user)
+            token = Token(uid=id, user=user)
         token.access_token = session.access_token
         token.expires = session.expires
         token.save()
