@@ -5,15 +5,6 @@ import settings
 import simplejson
 import urllib
 import urlparse
-    
-class FacebookSessionError(Exception):
-    def __init__(self, error_type, message):
-        self.message = message
-        self.type = error_type
-
-    def __unicode__(self):
-        return u'%s: "%s"' % (self.type, self.message)
-
 
 class FacebookSession:
     TOKEN_URI = 'oauth/access_token'

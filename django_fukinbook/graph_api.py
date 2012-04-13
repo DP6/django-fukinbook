@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import redirect
-from session import FacebookSessionError
+from exceptions import FacebookGenericError, FacebookSessionError
 from settings import LOGGER as logger
 import logging
 import settings
@@ -11,7 +11,6 @@ import datetime
 
 class GraphAPI:
     ''' We are supposing that every request will have a session '''
-    # TODO: Implement anon requests
     def __init__(self, access_token=None):
         self.access_token = access_token
     
@@ -25,6 +24,7 @@ class GraphAPI:
             # TODO: Need to know what to do with exception
             logger.error(e)
             raise Http404
+        
         if 'error' in response:
             return self._error_handler(response)
         return response
@@ -33,7 +33,13 @@ class GraphAPI:
         error = response['error']
         logger.error(error)
         
-        raise FacebookSessionError(error['type'], error['message'])
+        auth_error_codes = [190]
+        auth_error_codes.extend(range(400, 500)) # Error codes between 400 and 499
+        if 'code' in error:
+            error_code = error['code']
+            if error_code in auth_error_codes:
+                raise FacebookSessionError(error)
+        raise FacebookGenericError(error)
     
     def _create_token_url(self, path, fql, connection_type, metadata, format):
         token_url = '%s%s' % (settings.GRAPH_API_URL, path)

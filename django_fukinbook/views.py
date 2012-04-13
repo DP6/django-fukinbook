@@ -1,3 +1,4 @@
+from decorators import facebook_auth_required
 from django.contrib import auth
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response, HttpResponse, redirect
@@ -7,17 +8,16 @@ from graph_api import GraphAPI, ExampleAPI
 from models import Token
 from session import FacebookSession
 from settings import LOGGER as logger
+from utils import create_authorize_url
 import settings
 import urllib
-from decorators import facebook_auth_required
-from utils import create_authorize_url
 
 @facebook_auth_required
 def canvas(request):
-    api = GraphAPI(request.access_token)
-    a = api.get()
+    api = ExampleAPI(request.access_token)
+    me = api.get_upcoming_birthdates()
 
-    return HttpResponse('JSON: ' + str(a))
+    return HttpResponse('JSON: ' + str(me))
 
 @csrf_exempt
 def login(request):
