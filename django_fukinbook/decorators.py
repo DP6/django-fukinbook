@@ -1,13 +1,13 @@
+from django.http import HttpResponseServerError
+from django.shortcuts import redirect
+from exceptions import FacebookGenericError, FacebookSessionError
+from graph_api import GraphAPI
 from models import Token
 from settings import LOGGER as logger
-from django.shortcuts import redirect
-from django.http import Http404, HttpResponseServerError
-import settings
-import datetime
-import time
 from utils import create_authorize_url
-from graph_api import GraphAPI
-from exceptions import FacebookGenericError, FacebookSessionError
+import datetime
+import settings
+import time
 
 def facebook_auth_required(func):
     def wrap(request, *args, **kwargs):    

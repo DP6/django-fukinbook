@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import HttpResponseServerError
 from django.shortcuts import redirect
 from exceptions import FacebookGenericError, FacebookSessionError
 from settings import LOGGER as logger
@@ -23,7 +23,7 @@ class GraphAPI:
         except Exception, e:
             # TODO: Need to know what to do with exception
             logger.error(e)
-            raise Http404
+            raise HttpResponseServerError(str(e))
         
         if 'error' in response:
             return self._error_handler(response)
