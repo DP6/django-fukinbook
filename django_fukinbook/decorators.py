@@ -23,6 +23,7 @@ def facebook_auth_required(func):
         timestamp_now = time.mktime(datetime.datetime.utcnow().timetuple())
         if token.expires < timestamp_now + timeout:
             logger.warn('Token expired. Trying to fetch a new one.')
+            logger.debug(authorize_url)
             return redirect(authorize_url)
         
         request.access_token = token.access_token

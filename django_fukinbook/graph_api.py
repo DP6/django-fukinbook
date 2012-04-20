@@ -21,13 +21,14 @@ class GraphAPI:
         try:
             response = simplejson.load(urllib.urlopen(token_url))
         except Exception, e:
-            # TODO: Need to know what to do with exception
             logger.error(e)
             raise HttpResponseServerError(str(e))
         
         if 'error' in response:
             return self._error_handler(response)
-        return response['data'][0]
+        elif 'data' in response:
+            return response['data'][0]
+        return response
     
     def _error_handler(self, response):
         error = response['error']
