@@ -27,7 +27,7 @@ class GraphAPI:
         
         if 'error' in response:
             return self._error_handler(response)
-        return response
+        return response['data'][0]
     
     def _error_handler(self, response):
         error = response['error']
