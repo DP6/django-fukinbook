@@ -1,8 +1,7 @@
 from django.http import HttpResponseServerError
-from django.shortcuts import redirect
-from settings import LOGGER as logger
+import logging
+from django.conf import settings
 from exceptions import FacebookGenericError
-import settings
 import simplejson
 import urllib
 import urlparse
@@ -32,10 +31,10 @@ class FacebookSession:
             self.access_token = response['access_token'][0]
             self.expires = response['expires'][0]
         except KeyError, e:
-            logger.error(e)
+            logging.error(e)
             raise FacebookGenericError(str(e))
         except Exception, e:
-            logger.error(e)
+            logging.error(e)
             raise HttpResponseServerError(str(e))
             
         

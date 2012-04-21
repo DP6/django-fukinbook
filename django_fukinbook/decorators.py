@@ -1,13 +1,12 @@
 from django.http import HttpResponseServerError
 from django.shortcuts import redirect
 from exceptions import FacebookGenericError, FacebookSessionError
-from graph_api import GraphAPI
 from models import Token
-from settings import LOGGER as logger
+from django.conf import settings
 from utils import create_authorize_url
 import datetime
-import settings
 import time
+import logging
 
 def facebook_auth_required(func):
     def wrap(request, *args, **kwargs):    
@@ -17,22 +16,22 @@ def facebook_auth_required(func):
         try:
             token = Token.objects.get(user=request.user)
         except Exception, e:
-            logger.error(e)
+            logging.error(e)
             return redirect(settings.FACEBOOK_LOGIN_URI)
         
         timestamp_now = time.mktime(datetime.datetime.utcnow().timetuple())
         if token.expires < timestamp_now + timeout:
-            logger.warn('Token expired. Trying to fetch a new one.')
+            logging.warn('Token expired. Trying to fetch a new one.')
             return redirect(authorize_url)
         
         request.access_token = token.access_token
         try:
             return func(request, *args, **kwargs)
         except FacebookSessionError, e:
-            logger.error(e)
+            logging.error(e)
             return redirect(authorize_url)
         except FacebookGenericError, e:
-            logger.error(e)
+            logging.error(e)
             return HttpResponseServerError(str(e))
         
     wrap.__doc__ = func.__doc__

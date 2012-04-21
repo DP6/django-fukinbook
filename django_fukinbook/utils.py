@@ -1,5 +1,5 @@
 import urllib
-import settings
+from django.conf import settings
 
 def create_authorize_url(redirect_uri=settings.FACEBOOK_REDIRECT_URI):
     AUTH_URI = 'oauth/authorize'
