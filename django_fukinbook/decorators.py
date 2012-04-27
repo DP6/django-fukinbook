@@ -4,6 +4,7 @@ from exceptions import FacebookGenericError, FacebookSessionError
 from models import Token
 from django.conf import settings
 from utils import create_authorize_url
+from django.core import urlresolvers
 import datetime
 import time
 import logging
@@ -17,7 +18,7 @@ def facebook_auth_required(func):
             token = Token.objects.get(user=request.user)
         except Exception, e:
             logging.error(e)
-            return redirect(settings.FACEBOOK_LOGIN_URI)
+            return redirect(urlresolvers.reverse('login'))
         
         timestamp_now = time.mktime(datetime.datetime.utcnow().timetuple())
         if token.expires < timestamp_now + timeout:
