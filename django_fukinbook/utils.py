@@ -3,7 +3,7 @@ from django.conf import settings
 
 def create_authorize_url(redirect_uri=settings.FACEBOOK_REDIRECT_URI):
     AUTH_URI = 'oauth/authorize'
-    redirect_uri = '{0}{1}'.format(settings.FACEBOOK_APP_URL, redirect_uri)
+    
     params = {
       'client_id': settings.FACEBOOK_APP_ID,
       'redirect_uri': redirect_uri,
