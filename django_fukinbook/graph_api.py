@@ -1,12 +1,9 @@
 from django.http import HttpResponseServerError
-from django.shortcuts import redirect
 from exceptions import FacebookGenericError, FacebookSessionError
-from settings import LOGGER as logger
+from django.conf import settings
 import logging
-import settings
 import simplejson
 import urllib
-import urlparse
 import datetime
 
 class GraphAPI:
@@ -21,7 +18,7 @@ class GraphAPI:
         try:
             response = simplejson.load(urllib.urlopen(token_url))
         except Exception, e:
-            logger.error(e)
+            logging.error(e)
             raise HttpResponseServerError(str(e))
         
         if 'error' in response:
@@ -34,6 +31,7 @@ class GraphAPI:
         error = response['error']
         logger.error(error)
         logger.debug(fql)
+
         auth_error_codes = [190]
         auth_error_codes.extend(range(400, 500)) # Error codes between 400 and 499
         if 'code' in error:
