@@ -11,7 +11,7 @@ import logging
 
 def facebook_auth_required(func):
     def wrap(request, *args, **kwargs):    
-        authorize_url = create_authorize_url(request.path)
+        authorize_url = create_authorize_url()
         timeout = 60
         
         try:
