@@ -29,8 +29,8 @@ class GraphAPI:
     
     def _error_handler(self, response, fql):
         error = response['error']
-        logger.error(error)
-        logger.debug(fql)
+        logging.error(error)
+        logging.debug(fql)
 
         auth_error_codes = [190]
         auth_error_codes.extend(range(400, 500)) # Error codes between 400 and 499
