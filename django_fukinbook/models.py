@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
        
 class Token(models.Model):
 
-    access_token = models.CharField(max_length=300, unique=True)
+    access_token = models.CharField(max_length=254, unique=True)
     _expires = models.IntegerField(null=False)
         
     user = models.ForeignKey(User, null=False)
