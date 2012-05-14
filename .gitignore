@@ -1,4 +1,5 @@
 *.pyc
+*.swp
 *.db
 __init__.*
 fukingbook.sublime-workspace

@@ -9,6 +9,8 @@ setup(
     url = '',
     license = 'GPL',
     packages = ['django_fukinbook'],
+    package_data={'django_fukinbook': ['templates/*']},
+
     zip_safe=False,
     install_requires=[
         'simplejson',
