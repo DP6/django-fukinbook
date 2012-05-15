@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from models import Token
+from models import Token, UserProfile
 from graph_api import GraphAPI
 import logging
 
@@ -18,6 +18,7 @@ class FacebookBackend:
         user.email = fb_profile.get('email')
         user.first_name = fb_profile.get('first_name')
         user.last_name = fb_profile.get('last_name')
+        user.save()
         
         user_profile = user.get_profile()
         user_profile.pic_small = fb_profile.get('pic_small')
