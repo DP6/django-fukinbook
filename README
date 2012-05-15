@@ -2,8 +2,12 @@
 
 
 
-1) Create an app on facebook and activate sandbox mode - this will let you use http requests - and change canvas URL to http://127.0.0.1:8000/
-2) Change everything on your settings.py that is inside <> to your configuration
+1) Create an app on facebook and activate sandbox mode - this will let you use http requests.
+And change site URL to http://127.0.0.1:8000
+
+2) Install it: 'pip install -e git+git@github.com:digitalinc/django-fukinbook.git#egg=django_fukinbook'
+
+3) Change everything on your settings.py that is inside <> to your configuration
 
 TEMPLATE_DIRS = (
     '<YOUR-DJANGO-PROJECT>/django_fukinbook/templates',
@@ -65,7 +69,7 @@ LOGGING = {
 
 FACEBOOK_APP_ID = '<YOUR-APP-ID>'
 FACEBOOK_APP_SECRET = '<YOUR-APP-SECRET>'
-FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/'
+FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/' # <<-- This really must be /login/
 FACEBOOK_APP_SCOPE = ','.join(['user_relationships', 
                                'friends_birthday',
                                'email']) # You can change to facebook scopes you want to use
@@ -73,7 +77,7 @@ FACEBOOK_APP_SCOPE = ','.join(['user_relationships',
 GRAPH_API_URL = 'https://graph.facebook.com/'
 MAIN_URL = '/canvas/' # This is the index of your facebook app
 
-3) Change your urls.py
+4) Change your urls.py
 
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
@@ -85,8 +89,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
 
-4) python manage.py syncdb
-5) Go to browser and type http://127.0.0.1:8000/login/
+5) python manage.py syncdb
+6) Go to browser and type http://127.0.0.1:8000/login/
 
 We started this project from http://djangosnippets.org/snippets/2065/
 Thanks to http://djangosnippets.org/users/barnardo/
