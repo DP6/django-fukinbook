@@ -61,7 +61,7 @@ urlpatterns = patterns('',
     },
 
 5) python manage.py syncdb
-6) Go to browser and type http://127.0.0.1:8000/
+6) Go to browser and type http://127.0.0.1:8000/login/
 
 We started this project from http://djangosnippets.org/snippets/2065/
 Thanks to http://djangosnippets.org/users/barnardo/
