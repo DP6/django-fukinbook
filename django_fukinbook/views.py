@@ -9,6 +9,7 @@ from django.conf import settings
 from utils import create_authorize_url
 import logging
 
+@csrf_exempt
 @facebook_auth_required
 def canvas(request):
     api = ExampleAPI(request.access_token)
