@@ -15,8 +15,7 @@ class FacebookBackend:
         except User.DoesNotExist:
             user = User(username=uid)
         user.set_unusable_password()
-        if 'email' in fb_profile:
-            user.email = fb_profile.get('email')
+        user.email = fb_profile.get('email', 'dont@have.com')
         user.first_name = fb_profile.get('first_name')
         user.last_name = fb_profile.get('last_name')
         user.save()
