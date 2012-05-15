@@ -45,8 +45,8 @@ urlpatterns = patterns('',
     url(r'^canvas/', 'django_fukinbook.views.canvas', name='canvas'),
     url(r'^admin/', include(admin.site.urls)),
 )
-
-4) Optional: If you want to DEBUG fukinbook, add those loggers:
+4) Add AUTH_PROFILE_MODULE = 'django_fukinbook.UserProfile'
+5) Optional: If you want to DEBUG fukinbook, add those loggers:
     'loggers': {
         '': {
             'handlers': ['console'],
@@ -60,8 +60,8 @@ urlpatterns = patterns('',
         },
     },
 
-5) python manage.py syncdb
-6) Go to browser and type http://127.0.0.1:8000/login/
+6) python manage.py syncdb
+7) Go to browser and type http://127.0.0.1:8000/login/
 
 We started this project from http://djangosnippets.org/snippets/2065/
 Thanks to http://djangosnippets.org/users/barnardo/
