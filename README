@@ -2,15 +2,19 @@
 
 
 
-1) Create an app on facebook and activate sandbox mode - this will let you use http requests - and change canvas URL to http://127.0.0.1:8000/
-2) Change everything on your settings.py that is inside <> to your configuration
+1) Create an app on facebook and activate sandbox mode - this will let you use http requests.
+And change site URL to http://127.0.0.1:8000
+
+2) Install it: 'pip install -e git+git@github.com:digitalinc/django-fukinbook.git#egg=django_fukinbook'
+
+3) Change everything on your settings.py that is inside <> to your configuration
 
 TEMPLATE_DIRS = (
     '<YOUR-DJANGO-PROJECT>/django_fukinbook/templates',
 )
 
 AUTHENTICATION_BACKENDS = (
-    '<YOUR-DJANGO-PROJECT>.django_fukinbook.backends.FacebookBackend',
+    'django_fukinbook.backends.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -25,16 +29,55 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 )
 
+AUTH_PROFILE_MODULE = 'django_fukinbook.UserProfile'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s [%(levelname)s] - %(module)s: %(message)s'
+        },
+        'verbose': {
+            'format': '%(asctime)s %(filename)s:%(lineno)d - [%(levelname)s] %(message)s'
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        '': {
+             'handlers': ['console'],
+             'level': 'DEBUG',
+             'propagate': True,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    }
+}
+
 FACEBOOK_APP_ID = '<YOUR-APP-ID>'
 FACEBOOK_APP_SECRET = '<YOUR-APP-SECRET>'
-FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/'
+FACEBOOK_REDIRECT_URI = 'http://127.0.0.1:8000/login/' # <<-- This really must be /login/
 FACEBOOK_APP_SCOPE = ','.join(['user_relationships', 
-                               'friends_birthday']) # You can change to facebook scopes you want to use
+                               'friends_birthday',
+                               'email']) # You can change to facebook scopes you want to use
 
 GRAPH_API_URL = 'https://graph.facebook.com/'
 MAIN_URL = '/canvas/' # This is the index of your facebook app
 
-3) Change your urls.py
+4) Change your urls.py
 
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
@@ -45,23 +88,9 @@ urlpatterns = patterns('',
     url(r'^canvas/', 'django_fukinbook.views.canvas', name='canvas'),
     url(r'^admin/', include(admin.site.urls)),
 )
-4) Add AUTH_PROFILE_MODULE = 'django_fukinbook.UserProfile'
-5) Optional: If you want to DEBUG fukinbook, add those loggers:
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True
-        },
-        'django.db.backends': { # Does not log SQL queries
-            'handlers': ['console'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-    },
 
-6) python manage.py syncdb
-7) Go to browser and type http://127.0.0.1:8000/login/
+5) python manage.py syncdb
+6) Go to browser and type http://127.0.0.1:8000/login/
 
 We started this project from http://djangosnippets.org/snippets/2065/
 Thanks to http://djangosnippets.org/users/barnardo/
