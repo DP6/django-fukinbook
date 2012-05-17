@@ -11,6 +11,7 @@ class UserProfile(models.Model):
     pic_small = models.URLField()
     pic = models.URLField()
     pic_big = models.URLField()
+    pic_square = models.URLField()
     
 def create_user_profile(sender, instance, created, **kwargs):
     if created:

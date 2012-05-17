@@ -8,7 +8,7 @@ class FacebookBackend:
     supports_anonymous_user = False
     supports_inactive_user = False
     
-    def save_user(self, fb_profile):
+    def _save_user(self, fb_profile):
         uid = fb_profile.get('uid')
         try:
             user = User.objects.get(username=uid)
@@ -16,8 +16,6 @@ class FacebookBackend:
             user = User(username=uid)
         user.set_unusable_password()
         user.email = fb_profile.get('email')
-        if user.email == None:
-            user.email = 'dont@have.com'
         user.first_name = fb_profile.get('first_name')
         user.last_name = fb_profile.get('last_name')
         user.save()
@@ -26,11 +24,12 @@ class FacebookBackend:
         user_profile.pic_small = fb_profile.get('pic_small')
         user_profile.pic = fb_profile.get('pic')
         user_profile.pic_big = fb_profile.get('pic_big')
+        user_profile.pic_square = fb_profile.get('pic_square')
         user_profile.save()
 
         return user
 
-    def save_token(self, session, user):
+    def _save_token(self, session, user):
         uid = user.username
         try:
             token = Token.objects.get(uid=uid, user=user)
@@ -45,11 +44,12 @@ class FacebookBackend:
     def authenticate(self, session):
         api = GraphAPI(session.access_token)
         fql = '''
-        SELECT uid, email, first_name, last_name, pic_big, pic, pic_small 
-        FROM user WHERE uid = me()'''
-        profile = api.get(path='fql', fql=fql)[0]
-        user = self.save_user(profile)
-        token = self.save_token(session, user)
+        SELECT uid, email, first_name, last_name, pic_big, 
+        pic, pic_small, pic_square FROM user WHERE uid = me()'''
+        fb_profile = api.get(path='fql', fql=fql)[0]
+
+        user = self._save_user(fb_profile)
+        token = self._save_token(session, user)
 
         return user
 
