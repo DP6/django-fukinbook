@@ -6,20 +6,25 @@ from django.views.decorators.csrf import csrf_exempt
 from graph_api import ExampleAPI
 from session import FacebookSession
 from django.conf import settings
-from utils import create_authorize_url
+import utils
 import logging
 
 @csrf_exempt
 @facebook_auth_required
-def canvas(request):
+def test(request):
     api = ExampleAPI(request.access_token)
     me = api.get_upcoming_birthdates()
 
     return HttpResponse('JSON: ' + str(me))
 
 @csrf_exempt
+@facebook_auth_required
+def canvas(request):
+    return HttpResponse('<a href="/test">Test</a>')
+
+@csrf_exempt
 def login(request):
-    auth_url = create_authorize_url(state=request.META.get('HTTP_REFERER'))
+    auth_url = utils.create_authorize_url(state=request.META.get('HTTP_REFERER'))
     next_url = request.GET.get('state') or settings.MAIN_URL
     error = None
     
