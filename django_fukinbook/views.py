@@ -19,7 +19,8 @@ def canvas(request):
 
 @csrf_exempt
 def login(request):
-    auth_url = create_authorize_url()
+    auth_url = create_authorize_url(state=request.META.get('HTTP_REFERER'))
+    next_url = request.GET.get('state') or settings.MAIN_URL
     error = None
     
     if request.GET:
@@ -31,16 +32,19 @@ def login(request):
                 if user.is_active:
                     logging.debug('ACTIVE USER')
                     auth.login(request, user)
-                    return redirect(settings.MAIN_URL)
+                    return redirect(next_url)
                 else:
+                    logging.error('User is not active.')
                     error = 'AUTH_DISABLED'
             else:
+                logging.error('User does not exists.')
                 error = 'AUTH_FAILED'
         elif 'error_reason' in request.GET:
+            logging.error('Facebook authentication failed.')
             error = 'AUTH_DENIED'
     elif request.user.is_authenticated():
         logging.debug('AUTHORIZED USER')
-        return redirect(settings.MAIN_URL)
+        return redirect(next_url)
 
     template_context = {'error': error, 'auth_url': auth_url}
     return render_to_response('login.html', template_context,

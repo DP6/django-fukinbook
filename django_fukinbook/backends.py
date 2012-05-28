@@ -16,6 +16,8 @@ class FacebookBackend:
             user = User(username=uid)
         user.set_unusable_password()
         user.email = fb_profile.get('email')
+        if not user.email:
+            user.email = 'none@none.com'
         user.first_name = fb_profile.get('first_name')
         user.last_name = fb_profile.get('last_name')
         user.save()
