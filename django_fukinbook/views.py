@@ -25,7 +25,9 @@ def canvas(request):
 @csrf_exempt
 def login(request):
     auth_url = utils.create_authorize_url(state=request.META.get('HTTP_REFERER'))
-    next_url = request.GET.get('state') or settings.MAIN_URL
+    next_url = request.GET.get('state')
+    if next_url == 'None':
+        next_url = settings.MAIN_URL
     error = None
     
     if request.GET:
