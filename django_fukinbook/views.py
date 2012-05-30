@@ -26,7 +26,7 @@ def canvas(request):
 def login(request):
     auth_url = utils.create_authorize_url(state=request.META.get('HTTP_REFERER'))
     next_url = request.GET.get('state')
-    if next_url == 'None':
+    if not next_url or next_url == 'None':
         next_url = settings.MAIN_URL
     error = None
     
