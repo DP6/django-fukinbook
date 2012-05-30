@@ -35,6 +35,6 @@ class FacebookSession:
             raise FacebookGenericError(str(e))
         except Exception, e:
             logging.error(e)
-            raise HttpResponseServerError(str(e))
+            return HttpResponseServerError
             
         

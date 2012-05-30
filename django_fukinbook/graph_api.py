@@ -19,7 +19,7 @@ class GraphAPI:
             response = simplejson.load(urllib.urlopen(token_url))
         except Exception, e:
             logging.error(e)
-            raise HttpResponseServerError(str(e))
+            return HttpResponseServerError
         
         if 'error' in response:
             return self._error_handler(response, fql)
