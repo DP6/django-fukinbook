@@ -17,7 +17,7 @@ class GraphAPI:
 
     def start_async_tasks(self, tasks):
         self.tasks = tasks
-        for key, task in tasks.items():
+        for task in tasks:
             self.async_get(task)
 
         ioloop.IOLoop.instance().start()
@@ -26,9 +26,13 @@ class GraphAPI:
     def async_get(self, task, connection_type=None, metadata=False,
                   format='json'):
         fql = task.get('fql')
-        path = task.get('path')
-        self.async_queue.add(fql)
-        logging.debug(task)
+        if fql:
+            path = 'fql'
+        else:
+            path = task.get('path')
+        id = task.get('id')
+        self.async_queue.add(id)
+
         token_url = self._create_token_url(path, fql, connection_type,
                                            metadata, format)
 
@@ -38,7 +42,7 @@ class GraphAPI:
         else:
             task['response'] = response.body
 
-        self.async_queue.remove(fql)
+        self.async_queue.remove(id)
         if not self.async_queue:
             ioloop.IOLoop.instance().stop()
 

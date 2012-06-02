@@ -14,15 +14,15 @@ import simplejson
 @facebook_auth_required
 def async_test(request):
     api = GraphAPI(request.access_token)
-    task1 = {'path': 'fql',
+    task1 = {'id': 'significant_other',
              'fql': '''select name, uid from user where uid in 
              (select significant_other_id from user where uid=me())'''}
 
-    task2 = {'path': 'fql',
+    task2 = {'id': 'family_birthdates',
              'fql': '''select name, birthday_date, relationship_status, 
              significant_other_id, family from user where uid = me()'''}
 
-    tasks = {'significant_other': task1, 'family_birthdates': task2}
+    tasks = [task1, task2]
     api.start_async_tasks(tasks)
     processed_tasks = api.tasks
     logging.debug(processed_tasks)
