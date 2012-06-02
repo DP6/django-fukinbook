@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     name='django-fukinbook',
-    version='0.1',
-    description="Easy django app to use facebook",
+    version='0.2',
+    description="Easy django app to use facebook with async requests",
     author='Binarios Inglorios',
     author_email='binarios.inglorios@digitalcube.com.br',
     url='',
