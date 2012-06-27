@@ -7,7 +7,7 @@ class FacebookBackend:
     supports_object_permissions = True
     supports_anonymous_user = False
     supports_inactive_user = False
-    
+
     def _save_user(self, fb_profile):
         uid = fb_profile.get('uid')
         try:
@@ -21,12 +21,9 @@ class FacebookBackend:
         user.first_name = fb_profile.get('first_name')
         user.last_name = fb_profile.get('last_name')
         user.save()
-        
+
         user_profile = user.get_profile()
-        user_profile.pic_small = fb_profile.get('pic_small')
-        user_profile.pic = fb_profile.get('pic')
-        user_profile.pic_big = fb_profile.get('pic_big')
-        user_profile.pic_square = fb_profile.get('pic_square')
+        user_profile.is_app_user = True
         user_profile.save()
 
         return user
@@ -40,7 +37,7 @@ class FacebookBackend:
         token.access_token = session.access_token
         token.expires = session.expires
         token.save()
-        
+
         return token
 
     def authenticate(self, session):
