@@ -5,7 +5,10 @@ import logging
 import simplejson
 import urllib
 import datetime
+import httplib2
 from tornado import httpclient, ioloop, gen
+from models import Token
+
 
 class GraphAPI:
     ''' We are supposing that every request will have a session '''
@@ -62,6 +65,27 @@ class GraphAPI:
             return response['data']
         return response
 
+    def delete(self, path, fql=None, connection_type=None, metadata=False,
+               format='json'):
+        token_url = self._create_token_url(path, fql, connection_type,
+                                           metadata, format)
+        h = httplib2.Http()
+        try:
+            headers, response = h.request(token_url, 'DELETE')
+        except Exception, e:
+            logging.error(e)
+            return HttpResponseServerError
+
+        if response == 'true':
+            return True
+
+        response = simplejson.loads(response)
+#        import pdb; pdb.set_trace()
+        if 'error' in response:
+            return self._error_handler(response, fql, token_url)
+
+        return response
+
     def _error_handler(self, response, fql, url):
         error = response['error']
         logging.error(error)
@@ -89,6 +113,20 @@ class GraphAPI:
 
         token_url = '%s?%s' % (token_url, urllib.urlencode(params))
         return token_url
+
+    def revoke_token(self, access_token):
+        api = GraphAPI(access_token)
+        response = api.delete('me/permissions')
+        try:
+            token = Token.objects.get(access_token=access_token)
+            token.delete()
+        except Exception, e:
+            logging.error(
+                'Could not delete access_token {0}: {1}'.format(access_token,
+                                                                e))
+            return False
+        return True
+
 
 class ExampleAPI(GraphAPI):
     def get_significant_other(self):

@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from models import Token, UserProfile
 from graph_api import GraphAPI
 import logging
+from django.contrib.auth import logout
+
 
 class FacebookBackend:
     supports_object_permissions = True

@@ -3,9 +3,9 @@ class FacebookGenericError(Exception):
         self.type = error.get('type')
         self.message = error.get('message')
         self.code = error.get('code')
-        
-    def __unicode__(self):
+
+    def __str__(self):
         return u'%s (#%s): "%s"' % (self.type, self.code, self.message)
-    
+
 class FacebookSessionError(FacebookGenericError):
     pass

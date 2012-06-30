@@ -9,6 +9,8 @@ from django.conf import settings
 import utils
 import logging
 import simplejson
+from django.contrib.auth import logout
+
 
 @csrf_exempt
 @facebook_auth_required
@@ -40,7 +42,8 @@ def test(request):
 @csrf_exempt
 @facebook_auth_required
 def canvas(request):
-    response = '''<a href="/test">Test</a><br /><a href="/test_async">Async Test</a><br />'''
+    response = '''<a href="/test">Test</a><br /><a href="/test_async">Async Test</a><br />
+    <a href="/logout">Logout</a>'''
     return HttpResponse(response)
 
 @csrf_exempt
@@ -78,4 +81,10 @@ def login(request):
     return render_to_response('login.html', template_context,
                               context_instance=Context(request))
 
+@facebook_auth_required
+def logout(request):
+    graph_api = GraphAPI(request.access_token)
+    graph_api.revoke_token(request.access_token)
+    logout(request)
+    return redirect(settings.MAIN_URL)
 
