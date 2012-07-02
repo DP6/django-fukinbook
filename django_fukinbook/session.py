@@ -19,15 +19,25 @@ class FacebookSession:
         self.code = code
         self.access_token = None
         self.expires = None
-        self._get_response()
+        self._get_token_from_response(self._encode_token_url)
+#        self._get_token_from_response(self._encode_extended_token_url)
 
-    def _encode_url(self):
-        self.ARGS['code'] = self.code
+    def _encode_token_url(self):
+        ARGS = dict(self.ARGS)
+        ARGS['code'] = self.code
         return '%s%s?%s' % (settings.GRAPH_API_URL, self.TOKEN_URI,
-                            urllib.urlencode(self.ARGS))
+                            urllib.urlencode(ARGS))
 
-    def _get_response(self):
-        url = self._encode_url()
+    def _encode_extended_token_url(self):
+        ARGS = dict(self.ARGS)
+        ARGS['grant_type'] = 'fb_exchange_token'
+        ARGS['fb_exchange_token'] = self.access_token
+        return '{0}{1}?{2}'.format(settings.GRAPH_API_URL, self.TOKEN_URI,
+                                   urllib.urlencode(ARGS))
+
+    def _get_token_from_response(self, token_generator_func):
+        url = token_generator_func()
+        logging.debug(url)
         h = httplib2.Http()
         try:
             headers, response = h.request(url, 'GET')
@@ -40,5 +50,8 @@ class FacebookSession:
         except Exception, e:
             logging.error(e)
             return HttpResponseServerError
+
+
+
 
 
