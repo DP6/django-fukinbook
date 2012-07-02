@@ -54,11 +54,17 @@ class GraphAPI:
         token_url = self._create_token_url(path, fql, connection_type, metadata,
                                            format)
         try:
-            response = simplejson.load(urllib.urlopen(token_url))
+            response = urllib.urlopen(token_url)
         except Exception, e:
             logging.error(e)
             return HttpResponseServerError
 
+        if response in ['true', 'false']:
+            response = {'error':
+                        'Facebook Graph API returned unexpected boolean.'}
+            return self._error_handler(response, fql, token_url)
+
+        response = simplejson.load(response)
         if 'error' in response:
             return self._error_handler(response, fql, token_url)
         elif 'data' in response:

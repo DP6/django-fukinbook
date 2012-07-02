@@ -30,10 +30,10 @@ def facebook_auth_required(func):
         try:
             return func(request, *args, **kwargs)
         except FacebookSessionError, e:
-            logging.error(e)
+            logging.error(str(e))
             return redirect(refresh_token_url)
         except FacebookGenericError, e:
-            logging.error(e)
+            logging.error(str(e))
             return HttpResponseServerError
 
     wrap.__doc__ = func.__doc__
