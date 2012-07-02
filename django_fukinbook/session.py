@@ -5,6 +5,8 @@ from exceptions import FacebookGenericError
 import simplejson
 import urllib
 import urlparse
+import httplib2
+
 
 class FacebookSession:
     TOKEN_URI = 'oauth/access_token'
@@ -21,13 +23,15 @@ class FacebookSession:
 
     def _encode_url(self):
         self.ARGS['code'] = self.code
-        return '%s%s?%s' % (settings.GRAPH_API_URL, self.TOKEN_URI, 
+        return '%s%s?%s' % (settings.GRAPH_API_URL, self.TOKEN_URI,
                             urllib.urlencode(self.ARGS))
 
     def _get_response(self):
         url = self._encode_url()
+        h = httplib2.Http()
         try:
-            response = urlparse.parse_qs(urllib.urlopen(url).read())
+            headers, response = h.request(url, 'GET')
+            response = urlparse.parse_qs(response)
             self.access_token = response['access_token'][0]
             self.expires = response['expires'][0]
         except KeyError, e:
@@ -36,5 +40,5 @@ class FacebookSession:
         except Exception, e:
             logging.error(e)
             return HttpResponseServerError
-            
-        
+
+

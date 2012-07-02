@@ -9,6 +9,7 @@ import datetime
 import time
 import logging
 
+
 def facebook_auth_required(func):
     def wrap(request, *args, **kwargs):
         refresh_token_url = create_authorize_url(state=request.path)
@@ -17,7 +18,7 @@ def facebook_auth_required(func):
         try:
             token = Token.objects.get(user=request.user)
         except Exception, e:
-            logging.info(e)
+            logging.info(str(e))
             login_url = '/login?next={0}'.format(request.path)
             return redirect(login_url)
 
