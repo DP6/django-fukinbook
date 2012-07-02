@@ -16,5 +16,6 @@ setup(
         'simplejson',
         'django',
         'tornado',
+	'httplib2',
     ],
 )
