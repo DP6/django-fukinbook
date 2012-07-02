@@ -3,6 +3,7 @@ from models import Token, UserProfile
 from graph_api import GraphAPI
 import logging
 from django.contrib.auth import logout
+from django.db.transaction import commit_on_success
 
 
 class FacebookBackend:
@@ -10,6 +11,7 @@ class FacebookBackend:
     supports_anonymous_user = False
     supports_inactive_user = False
 
+    @commit_on_success
     def _save_user(self, fb_profile):
         uid = fb_profile.get('uid')
         try:
