@@ -31,6 +31,7 @@ def async_test(request):
 
     return HttpResponse(simplejson.dumps(processed_tasks))
 
+
 @csrf_exempt
 @facebook_auth_required
 def test(request):
@@ -39,21 +40,27 @@ def test(request):
 
     return HttpResponse(simplejson.dumps(me))
 
+
 @csrf_exempt
 @facebook_auth_required
 def canvas(request):
-    response = '''<a href="/test">Test</a><br /><a href="/test_async">Async Test</a><br />
+    response = '''<a href="/test">Test</a><br />
+    <a href="/test_async">Async Test</a><br />
     <a href="/logout">Logout</a>'''
     return HttpResponse(response)
 
+
 @csrf_exempt
 def login(request):
-    auth_url = utils.create_authorize_url(state=request.META.get('HTTP_REFERER'))
-    next_url = request.GET.get('state')
+    next_url = request.GET.get('next')
+    state_url = request.GET.get('state')
     if not next_url or next_url == 'None':
-        next_url = settings.MAIN_URL
-    error = None
+        if state_url:
+            next_url = state_url
+        else:
+            next_url = settings.MAIN_URL
 
+    error = None
     if request.GET:
         if 'code' in request.GET:
             logging.debug('CODE FOUND')
@@ -77,9 +84,11 @@ def login(request):
         logging.debug('AUTHORIZED USER')
         return redirect(next_url)
 
+    auth_url = utils.create_authorize_url(state=next_url)
     template_context = {'error': error, 'auth_url': auth_url}
     return render_to_response('login.html', template_context,
                               context_instance=Context(request))
+
 
 @facebook_auth_required
 def logout(request):

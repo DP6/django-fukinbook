@@ -80,7 +80,6 @@ class GraphAPI:
             return True
 
         response = simplejson.loads(response)
-#        import pdb; pdb.set_trace()
         if 'error' in response:
             return self._error_handler(response, fql, token_url)
 
