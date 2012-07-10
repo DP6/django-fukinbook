@@ -84,11 +84,11 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^login/', 'fukinbook_app.views.login', name='login'),
-    url(r'^logout/', 'fukinbook_app.views.logout', name='logout'),
-    url(r'^canvas/', 'fukinbook_app.views.canvas', name='canvas'),
-    url(r'^test/', 'fukinbook_app.views.test', name='test'),
-    url(r'^test_async/', 'fukinbook_app.views.async_test', name='async_test'),
+    url(r'^login/', 'django_fukinbook.views.login', name='login'),
+    url(r'^logout/', 'django_fukinbook.views.logout', name='logout'),
+    url(r'^canvas/', 'django_fukinbook.views.canvas', name='canvas'),
+    url(r'^test/', 'django_fukinbook.views.test', name='test'),
+    url(r'^test_async/', 'django_fukinbook.views.async_test', name='async_test'),
     url(r'^admin/', include(admin.site.urls)),
 )
 
