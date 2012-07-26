@@ -9,7 +9,6 @@ from django.conf import settings
 import utils
 import logging
 import simplejson
-from django.contrib.auth import logout
 
 
 @csrf_exempt
@@ -44,6 +43,7 @@ def test(request):
 @csrf_exempt
 @facebook_auth_required
 def canvas(request):
+    logging.debug(request.user)
     response = '''<a href="/test">Test</a><br />
     <a href="/test_async">Async Test</a><br />
     <a href="/logout">Logout</a>'''
@@ -64,8 +64,10 @@ def login(request):
     if request.GET:
         if 'code' in request.GET:
             logging.debug('CODE FOUND')
-            session = FacebookSession(request.GET['code'])
-            user = auth.authenticate(session=session)
+            facebook_session = FacebookSession(request.GET['code'])
+            user = auth.authenticate(facebook_session=facebook_session,
+                                     django_session=request.session,
+                                     user=request.user or None)
             if user:
                 if user.is_active:
                     logging.debug('ACTIVE USER')
@@ -92,8 +94,12 @@ def login(request):
 
 @facebook_auth_required
 def logout(request):
-    graph_api = GraphAPI(request.access_token)
-    graph_api.revoke_token(request.access_token)
-    logout(request)
+#    Uncomment these two lines if you want to revoke fb_token
+#    on logout
+#
+#    graph_api = GraphAPI(request.access_token)
+#    graph_api.revoke_token(request.access_token)
+
+    auth.logout(request)
     return redirect(settings.MAIN_URL)
 

@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from models import Token, UserProfile
+from models import UserProfile
 from graph_api import GraphAPI
 import logging
 from django.contrib.auth import logout
@@ -12,13 +12,8 @@ class FacebookBackend:
     supports_inactive_user = False
 
     @commit_on_success
-    def _save_user(self, fb_profile):
-        uid = fb_profile.get('uid')
-        try:
-            user = User.objects.get(username=uid)
-        except User.DoesNotExist:
-            user = User(username=uid)
-        user.set_unusable_password()
+    def _save_fb_user(self, user, fb_profile):
+
         user.email = fb_profile.get('email')
         if not user.email:
             user.email = 'none@none.com'
@@ -28,31 +23,30 @@ class FacebookBackend:
 
         user_profile = user.get_profile()
         user_profile.is_app_user = True
+        user_profile.uid = fb_profile.get('uid')
         user_profile.save()
 
         return user
 
-    def _save_token(self, session, user):
-        uid = user.username
-        try:
-            token = Token.objects.get(uid=uid, user=user)
-        except Exception:
-            token = Token(uid=uid, user=user)
-        token.access_token = session.access_token
-        token.expires = session.expires
-        token.save()
+    def _save_token(self, facebook_session, django_session, user):
+        django_session['fb_token'] = {'access_token': facebook_session.access_token,
+                                      'expires': facebook_session.expires}
 
-        return token
-
-    def authenticate(self, session):
-        api = GraphAPI(session.access_token)
+    def authenticate(self, facebook_session, django_session, user=None):
+        api = GraphAPI(facebook_session.access_token)
         fql = '''
-        SELECT uid, email, first_name, last_name, pic_big, 
-        pic, pic_small, pic_square FROM user WHERE uid = me()'''
+            SELECT uid, username, email, first_name, last_name 
+            FROM user WHERE uid = me()'''
         fb_profile = api.get(path='fql', fql=fql)[0]
 
-        user = self._save_user(fb_profile)
-        token = self._save_token(session, user)
+        if user and user.is_active:
+            user = self._save_fb_user(user, fb_profile)
+        else:
+            user = User.objects.get_or_create(username=fb_profile['username'])[0]
+            user.set_unusable_password()
+            user = self._save_fb_user(user, fb_profile)
+
+        self._save_token(facebook_session, django_session, user)
 
         return user
 

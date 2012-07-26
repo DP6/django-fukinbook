@@ -7,7 +7,6 @@ import urllib
 import datetime
 import httplib2
 from tornado import httpclient, ioloop, gen
-from models import Token
 
 
 class GraphAPI:
@@ -122,15 +121,12 @@ class GraphAPI:
 
     def revoke_token(self, access_token):
         api = GraphAPI(access_token)
-        response = api.delete('me/permissions')
         try:
-            token = Token.objects.get(access_token=access_token)
-            token.delete()
+            response = api.delete('me/permissions')
         except Exception, e:
-            logging.error(
-                'Could not delete access_token {0}: {1}'.format(access_token,
-                                                                e))
+            logging.error(str(e))
             return False
+
         return True
 
 
