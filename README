@@ -2,8 +2,9 @@
 
 
 
-1) Create an app on facebook and activate sandbox mode - this will let you use http requests.
-And change site URL to http://127.0.0.1:8000
+1) Create an app on facebook and activate sandbox mode - this will let you use http requests inside a canvas.
+If you are only using Facebook login, it's not needed.
+Change site URL to http://127.0.0.1:8000
 
 2) Install it: 'pip install -e git+git@github.com:digitalinc/django-fukinbook.git#egg=django_fukinbook'
 
@@ -75,7 +76,7 @@ FACEBOOK_APP_SCOPE = ','.join(['user_relationships',
                                'email']) # You can change to facebook scopes you want to use
 
 GRAPH_API_URL = 'https://graph.facebook.com/'
-MAIN_URL = '/canvas/' # This is the index of your facebook app
+MAIN_URL = '/' # This is the index of your facebook app
 
 4) Change your urls.py
 
