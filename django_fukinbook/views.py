@@ -1,7 +1,7 @@
 from decorators import facebook_auth_required
 from django.contrib import auth
 from django.shortcuts import render_to_response, HttpResponse, redirect
-from django.template import Context
+from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from graph_api import ExampleAPI, GraphAPI
 from session import FacebookSession
@@ -89,7 +89,7 @@ def login(request):
     auth_url = utils.create_authorize_url(state=next_url)
     template_context = {'error': error, 'auth_url': auth_url}
     return render_to_response('login.html', template_context,
-                              context_instance=Context(request))
+                              context_instance=RequestContext(request))
 
 
 @facebook_auth_required
