@@ -42,7 +42,7 @@ class GraphAPI:
         if response.error:
             logging.error(response.error)
         else:
-            task['response'] = response.body
+            task['response'] = simplejson.loads(response.body)
 
         self.async_queue.remove(id)
         if not self.async_queue:
